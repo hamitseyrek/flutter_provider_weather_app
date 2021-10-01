@@ -34,9 +34,9 @@ class WeatherModel {
   late final String timezone;
 
   WeatherModel.fromJson(Map<String, dynamic> json) {
-    consolidatedWeather = List.from(json['consolidated_weather'])
-        .map((e) => ConsolidatedWeather.fromJson(e))
-        .toList();
+    consolidatedWeather = List<ConsolidatedWeather>.from(
+        json["consolidated_weather"]
+            .map((x) => ConsolidatedWeather.fromJson(x)));
     time = json['time'];
     sunRise = json['sun_rise'];
     sunSet = json['sun_set'];
@@ -98,8 +98,8 @@ class ConsolidatedWeather {
   late final double maxTemp;
   late final double theTemp;
   late final double windSpeed;
-  late final double? windDirection;
-  late final int? airPressure;
+  late final double windDirection;
+  late final double airPressure;
   late final int humidity;
   late final double visibility;
   late final int predictability;

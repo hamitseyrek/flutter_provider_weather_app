@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_bloc_weather_app/blocs/weather/bloc/weather_bloc.dart';
+import 'package:flutter_bloc_weather_app/data/weather_repository.dart';
 import 'package:flutter_bloc_weather_app/locator.dart';
 import 'package:flutter_bloc_weather_app/widget/weather_app.dart';
 
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: BlocProvider<WeatherBloc>(
-        create: (context) => WeatherBloc(),
+        create: (context) => WeatherBloc(WeatherRepository()),
         child: WeatherApp(),
       ),
     );

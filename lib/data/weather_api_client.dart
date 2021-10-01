@@ -8,8 +8,8 @@ class WeatherApiClient {
   final http.Client httpClient = http.Client();
 
   Future<int> getCityID(String cityName) async {
-    final cityURL = baseUrl + '/api/location/search/?query=' + cityName;
-    final cityID = await httpClient.get(Uri.dataFromString(cityURL));
+    final cityURL = baseUrl + 'api/location/search/?query=' + cityName;
+    final cityID = await httpClient.get(Uri.parse(cityURL));
 
     if (cityID.statusCode != 200) {
       throw Exception('Data can not give');
@@ -20,9 +20,8 @@ class WeatherApiClient {
   }
 
   Future<WeatherModel> getWeather(int cityID) async {
-    final weatherURL = baseUrl + '/api/location/' + cityID.toString();
-    final responseWeather =
-        await httpClient.get(Uri.dataFromString(weatherURL));
+    final weatherURL = baseUrl + 'api/location/' + cityID.toString();
+    final responseWeather = await httpClient.get(Uri.parse(weatherURL));
 
     if (responseWeather.statusCode != 200) {
       throw Exception('Weather can not give');
