@@ -7,7 +7,7 @@ class WeatherApiClient {
   static const baseUrl = 'https://www.metaweather.com/';
   final http.Client httpClient = http.Client();
 
-  Future<int> getCityId(String cityName) async {
+  Future<int> getCityID(String cityName) async {
     final cityURL = baseUrl + '/api/location/search/?query=' + cityName;
     final cityID = await httpClient.get(Uri.dataFromString(cityURL));
 

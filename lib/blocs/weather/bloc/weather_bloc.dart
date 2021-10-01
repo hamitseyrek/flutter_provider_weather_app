@@ -1,7 +1,6 @@
-import 'dart:html';
-
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc_weather_app/data/weather_repository.dart';
 import 'package:flutter_bloc_weather_app/models/weather_model.dart';
 
@@ -11,12 +10,11 @@ part 'weather_event.dart';
 part 'weather_state.dart';
 
 class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
-  final WeatherRepository weatherRepository = locator<WeatherRepository>();
+  WeatherRepository weatherRepository = locator<WeatherRepository>();
+  WeatherBloc({Key? key}) : super(WeatherInitialState());
 
-  WeatherBloc() : super(WeatherInitialState()) {
-    on<WeatherEvent>((event, emit) {});
-  }
-
+  @override
+  WeatherState get initialState => WeatherInitialState();
   @override
   Stream<WeatherState> mapEventToState(WeatherEvent event) async* {
     if (event is FetchWeatherEvent) {
@@ -25,6 +23,7 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
         // get weather state
         final comingWeather =
             await weatherRepository.getWeather(event.cityName);
+        debugPrint(comingWeather.sunRise);
         yield WeatherLoadedState(weatherModel: comingWeather);
       } catch (e) {
         yield WeatherErrorState();
