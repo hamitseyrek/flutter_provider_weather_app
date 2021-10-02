@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_bloc_weather_app/blocs/weather/bloc/weather_bloc.dart';
@@ -9,6 +11,7 @@ import 'package:flutter_bloc_weather_app/widget/weather_image.dart';
 
 class WeatherApp extends StatelessWidget {
   String _selectedCity = 'Ankara';
+  Completer<void> _refreshCompleter = Completer<void>();
 
   WeatherApp({Key? key}) : super(key: key);
 
@@ -41,28 +44,35 @@ class WeatherApp extends StatelessWidget {
             } else if (state is WeatherLoadingState) {
               return const Center(child: CircularProgressIndicator());
             } else if (state is WeatherLoadedState) {
-              final responseWeather = state.weatherModel;
-              responseWeather.consolidatedWeather[0].maxTemp;
-              return ListView(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Center(
-                        child: LocationWidget(selectedCity: _selectedCity)),
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Center(child: LastUpdateWidget()),
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Center(child: WeatherImageWidget()),
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.all(18.0),
-                    child: Center(child: MaxMinHeatWidget()),
-                  ),
-                ],
+              _refreshCompleter.complete();
+              _refreshCompleter = Completer<void>();
+              return RefreshIndicator(
+                onRefresh: () {
+                  _weatherBloc
+                      .add(RefreshWeatherEvent(cityName: _selectedCity));
+                  return _refreshCompleter.future;
+                },
+                child: ListView(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Center(
+                          child: LocationWidget(selectedCity: _selectedCity)),
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Center(child: LastUpdateWidget()),
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Center(child: WeatherImageWidget()),
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.all(18.0),
+                      child: Center(child: MaxMinHeatWidget()),
+                    ),
+                  ],
+                ),
               );
             } else {
               return Text('Error');
