@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_bloc_weather_app/blocs/thema/bloc/thema_bloc.dart';
 import 'package:flutter_bloc_weather_app/blocs/weather/bloc/weather_bloc.dart';
 import 'package:flutter_bloc_weather_app/widget/last_update.dart';
 import 'package:flutter_bloc_weather_app/widget/location.dart';
@@ -44,6 +45,10 @@ class WeatherApp extends StatelessWidget {
             } else if (state is WeatherLoadingState) {
               return const Center(child: CircularProgressIndicator());
             } else if (state is WeatherLoadedState) {
+              final responseWeather = state.weatherModel;
+              BlocProvider.of<ThemaBloc>(context).add(ChangeThema(
+                  weatherStateAbbr:
+                      responseWeather.consolidatedWeather[0].weatherStateAbbr));
               _refreshCompleter.complete();
               _refreshCompleter = Completer<void>();
               return RefreshIndicator(
