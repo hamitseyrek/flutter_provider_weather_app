@@ -58,17 +58,14 @@ class WeatherApp extends StatelessWidget {
                     padding: EdgeInsets.all(8.0),
                     child: Center(child: WeatherImageWidget()),
                   ),
-                  Padding(
+                  const Padding(
                     padding: EdgeInsets.all(18.0),
-                    child: Center(
-                        child: Text(responseWeather
-                            .consolidatedWeather[0].maxTemp
-                            .toString())),
+                    child: Center(child: MaxMinHeatWidget()),
                   ),
                 ],
               );
             } else {
-              return Text('e');
+              return Text('Error');
             }
           },
         ),
