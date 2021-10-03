@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc_weather_app/viewmodel/mytheme_view_model.dart';
 import 'package:flutter_bloc_weather_app/viewmodel/weather_view_model.dart';
@@ -11,10 +14,12 @@ import 'package:provider/provider.dart';
 class WeatherApp extends StatelessWidget {
   WeatherApp({Key? key}) : super(key: key);
   String _selectedCity = 'Ankara';
+  Completer<void> _refreshCompleter = Completer<Void>();
+  WeatherViewModel? _weatherViewModel;
 
   @override
   Widget build(BuildContext context) {
-    final _weatherViewModel = Provider.of<WeatherViewModel>(context);
+    _weatherViewModel = Provider.of<WeatherViewModel>(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Weather App'),
@@ -45,31 +50,38 @@ class WeatherApp extends StatelessWidget {
     );
   }
 
-  ListView loadedState(BuildContext context) {
-    var weatherStateAbbr = Provider.of<WeatherViewModel>(context)
+  Widget loadedState(BuildContext context) {
+    /*var weatherStateAbbr = Provider.of<WeatherViewModel>(context)
         .responseWeather
         .consolidatedWeather[0]
         .weatherStateAbbr;
-    Provider.of<MyThemeViewModel>(context).ChangeTheme(weatherStateAbbr);
-    return ListView(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Center(child: LocationWidget(selectedCity: _selectedCity)),
-        ),
-        const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Center(child: LastUpdateWidget()),
-        ),
-        const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Center(child: WeatherImageWidget()),
-        ),
-        const Padding(
-          padding: EdgeInsets.all(18.0),
-          child: Center(child: MaxMinHeatWidget()),
-        ),
-      ],
+    Provider.of<MyThemeViewModel>(context).ChangeTheme(weatherStateAbbr);*/
+
+    return RefreshIndicator(
+      onRefresh: () {
+        _weatherViewModel!.getWeather(_selectedCity);
+        return _refreshCompleter.future;
+      },
+      child: ListView(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Center(child: LocationWidget(selectedCity: _selectedCity)),
+          ),
+          const Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Center(child: LastUpdateWidget()),
+          ),
+          const Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Center(child: WeatherImageWidget()),
+          ),
+          const Padding(
+            padding: EdgeInsets.all(18.0),
+            child: Center(child: MaxMinHeatWidget()),
+          ),
+        ],
+      ),
     );
   }
 
