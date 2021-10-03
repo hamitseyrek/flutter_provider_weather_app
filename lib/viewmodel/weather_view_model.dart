@@ -12,8 +12,8 @@ enum WeatherState {
 
 class WeatherViewModel with ChangeNotifier {
   WeatherState? _weatherState;
-  WeatherRepository weatherRepository = locator<WeatherRepository>();
-  WeatherModel? responseWeather;
+  final WeatherRepository _weatherRepository = locator<WeatherRepository>();
+  WeatherModel? _responseWeather;
 
   WeatherViewModel() {
     _weatherState = WeatherState.initialWeatherState;
@@ -25,14 +25,16 @@ class WeatherViewModel with ChangeNotifier {
     notifyListeners();
   }
 
+  WeatherModel get responseWeather => _responseWeather!;
+
   Future<WeatherModel> getWeather(String cityName) async {
     try {
       weatherState = WeatherState.weatherLoadingState;
-      responseWeather = await weatherRepository.getWeather(cityName);
+      _responseWeather = await _weatherRepository.getWeather(cityName);
       weatherState = WeatherState.weatherLoadedState;
     } catch (e) {
       weatherState = WeatherState.weatherErrorState;
     }
-    return responseWeather!;
+    return _responseWeather!;
   }
 }
