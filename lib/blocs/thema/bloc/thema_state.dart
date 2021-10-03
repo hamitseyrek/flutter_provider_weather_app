@@ -1,18 +1,13 @@
 part of 'thema_bloc.dart';
 
 abstract class ThemaState extends Equatable {
-  const ThemaState([List props = const []]);
-
-  @override
-  List<Object> get props => [];
+  ThemaState();
 }
-
-class ThemaInitial extends ThemaState {}
 
 class ThemaAppState extends ThemaState {
   final ThemeData themeData;
   final MaterialColor materialColor;
-
-  ThemaAppState({required this.themeData, required this.materialColor})
-      : super([themeData, materialColor]);
+  ThemaAppState({required this.themeData, required this.materialColor});
+  @override
+  List<Object> get props => [themeData, materialColor];
 }

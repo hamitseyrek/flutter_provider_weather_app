@@ -19,11 +19,10 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    final _themaBloc = BlocProvider.of<ThemaBloc>(context);
-
-    return BlocBuilder(
-      bloc: _themaBloc,
-      builder: (context, state) {
+    return BlocBuilder<ThemaBloc, ThemaState>(
+      bloc: BlocProvider.of<ThemaBloc>(context),
+      builder: (context, ThemaState state) {
+        print((state as ThemaAppState).themeData.primaryColor);
         return MaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'Weather App',
