@@ -20,9 +20,8 @@ class MyApp extends StatelessWidget {
     return Consumer<MyThemeViewModel>(
       builder: (context, myThemeViewModel, child) => MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'Flutter Demo',
+        title: 'Provider Weather App',
         theme: myThemeViewModel.myTheme.themeData,
-        color: myThemeViewModel.myTheme.materialColor,
         home: ChangeNotifierProvider<WeatherViewModel>(
             create: (context) => locator<WeatherViewModel>(),
             child: WeatherApp()),
