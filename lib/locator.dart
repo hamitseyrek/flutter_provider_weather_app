@@ -10,6 +10,6 @@ GetIt locator = GetIt.instance;
 void setupLocator() {
   locator.registerLazySingleton(() => WeatherRepository());
   locator.registerLazySingleton(() => WeatherApiClient());
-  locator.registerFactory(() => WeatherViewModel());
+  locator.registerLazySingleton(() => WeatherViewModel());
   locator.registerLazySingleton(() => MyThemeViewModel());
 }

@@ -28,13 +28,27 @@ class WeatherViewModel with ChangeNotifier {
   WeatherModel get responseWeather => _responseWeather!;
 
   Future<WeatherModel> getWeather(String cityName) async {
+    weatherState = WeatherState.weatherLoadingState;
+
     try {
-      weatherState = WeatherState.weatherLoadingState;
       _responseWeather = await _weatherRepository.getWeather(cityName);
       weatherState = WeatherState.weatherLoadedState;
     } catch (e) {
       weatherState = WeatherState.weatherErrorState;
     }
     return _responseWeather!;
+  }
+
+  Future<WeatherModel> refreshWeather(String cityName) async {
+    try {
+      _responseWeather = await _weatherRepository.getWeather(cityName);
+      weatherState = WeatherState.weatherLoadedState;
+      // ignore: empty_catches
+    } catch (e) {}
+    return _responseWeather!;
+  }
+
+  String getWeatherStateAbbr() {
+    return _responseWeather!.consolidatedWeather[0].weatherStateAbbr;
   }
 }

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:ffi';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc_weather_app/locator.dart';
 import 'package:flutter_bloc_weather_app/viewmodel/mytheme_view_model.dart';
 import 'package:flutter_bloc_weather_app/viewmodel/weather_view_model.dart';
 import 'package:flutter_bloc_weather_app/widget/last_update.dart';
@@ -14,14 +15,17 @@ import 'package:provider/provider.dart';
 class WeatherApp extends StatelessWidget {
   WeatherApp({Key? key}) : super(key: key);
   String _selectedCity = 'Ankara';
-  Completer<void> _refreshCompleter = Completer<Void>();
+  Completer<void> _refreshCompleter = Completer<void>();
   WeatherViewModel? _weatherViewModel;
+  MyThemeViewModel? _myThemeViewModel;
 
   @override
   Widget build(BuildContext context) {
-    _weatherViewModel = Provider.of<WeatherViewModel>(context);
+    _weatherViewModel = locator<WeatherViewModel>();
+    _myThemeViewModel = locator<MyThemeViewModel>();
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Theme.of(context).primaryColor,
         title: const Text('Weather App'),
         actions: [
           IconButton(
@@ -30,19 +34,19 @@ class WeatherApp extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                         builder: (context) => SelectCityWidget()));
-                _weatherViewModel.getWeather(_selectedCity);
+                _weatherViewModel!.getWeather(_selectedCity);
               },
               icon: const Icon(Icons.search))
         ],
       ),
       body: Center(
         child:
-            (_weatherViewModel.weatherState == WeatherState.weatherLoadedState)
+            (_weatherViewModel!.weatherState == WeatherState.weatherLoadedState)
                 ? loadedState(context)
-                : (_weatherViewModel.weatherState ==
+                : (_weatherViewModel!.weatherState ==
                         WeatherState.weatherLoadingState)
                     ? loadingState()
-                    : (_weatherViewModel.weatherState ==
+                    : (_weatherViewModel!.weatherState ==
                             WeatherState.weatherErrorState)
                         ? errorState()
                         : initialState(),
@@ -51,15 +55,18 @@ class WeatherApp extends StatelessWidget {
   }
 
   Widget loadedState(BuildContext context) {
-    /*var weatherStateAbbr = Provider.of<WeatherViewModel>(context)
-        .responseWeather
-        .consolidatedWeather[0]
-        .weatherStateAbbr;
-    Provider.of<MyThemeViewModel>(context).ChangeTheme(weatherStateAbbr);*/
+    // Wait until the following return process is finished  and change the theme(1 second after).
+    Future.delayed(const Duration(seconds: 1), () {
+      var weatherStateAbbr = _weatherViewModel!.getWeatherStateAbbr();
+      _myThemeViewModel!.ChangeTheme('s');
+      //print(_selectedCity);
+    });
 
+    _refreshCompleter.complete();
+    _refreshCompleter = Completer<void>();
     return RefreshIndicator(
       onRefresh: () {
-        _weatherViewModel!.getWeather(_selectedCity);
+        _weatherViewModel!.refreshWeather(_selectedCity);
         return _refreshCompleter.future;
       },
       child: ListView(
