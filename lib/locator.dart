@@ -11,5 +11,5 @@ void setupLocator() {
   locator.registerLazySingleton(() => WeatherRepository());
   locator.registerLazySingleton(() => WeatherApiClient());
   locator.registerLazySingleton(() => WeatherViewModel());
-  locator.registerLazySingleton(() => MyThemeViewModel());
+  //locator.registerLazySingleton(() => MyThemeViewModel());
 }

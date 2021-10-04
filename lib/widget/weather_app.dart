@@ -21,11 +21,11 @@ class WeatherApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    _weatherViewModel = locator<WeatherViewModel>();
-    _myThemeViewModel = locator<MyThemeViewModel>();
+    _weatherViewModel = Provider.of<WeatherViewModel>(context);
+    _myThemeViewModel = Provider.of<MyThemeViewModel>(context);
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).primaryColor,
+        backgroundColor: _myThemeViewModel!.myTheme.themeData.primaryColor,
         title: const Text('Weather App'),
         actions: [
           IconButton(
@@ -58,32 +58,32 @@ class WeatherApp extends StatelessWidget {
     // Wait until the following return process is finished  and change the theme(1 second after).
     Future.delayed(const Duration(seconds: 1), () {
       var weatherStateAbbr = _weatherViewModel!.getWeatherStateAbbr();
-      _myThemeViewModel!.ChangeTheme('s');
-      //print(_selectedCity);
+      _myThemeViewModel!.ChangeTheme(weatherStateAbbr);
+      _refreshCompleter.complete();
+      _refreshCompleter = Completer<void>();
     });
 
-    _refreshCompleter.complete();
-    _refreshCompleter = Completer<void>();
     return RefreshIndicator(
       onRefresh: () {
-        _weatherViewModel!.refreshWeather(_selectedCity);
+        _weatherViewModel!
+            .refreshWeather(_weatherViewModel!.responseWeather.title);
         return _refreshCompleter.future;
       },
       child: ListView(
-        children: [
+        children: const [
           Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Center(child: LocationWidget(selectedCity: _selectedCity)),
+            padding: EdgeInsets.all(8.0),
+            child: Center(child: LocationWidget()),
           ),
-          const Padding(
+          Padding(
             padding: EdgeInsets.all(8.0),
             child: Center(child: LastUpdateWidget()),
           ),
-          const Padding(
+          Padding(
             padding: EdgeInsets.all(8.0),
             child: Center(child: WeatherImageWidget()),
           ),
-          const Padding(
+          Padding(
             padding: EdgeInsets.all(18.0),
             child: Center(child: MaxMinHeatWidget()),
           ),
