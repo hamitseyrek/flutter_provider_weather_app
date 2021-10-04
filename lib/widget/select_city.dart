@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class SelectCityWidget extends StatefulWidget {
-  SelectCityWidget({Key? key}) : super(key: key);
+  const SelectCityWidget({Key? key}) : super(key: key);
 
   @override
   _SelectCityWidgetState createState() => _SelectCityWidgetState();

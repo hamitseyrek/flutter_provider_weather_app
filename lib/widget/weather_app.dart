@@ -24,7 +24,7 @@ class WeatherApp extends StatelessWidget {
                 _selectedCity = await Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => SelectCityWidget()));
+                        builder: (context) => const SelectCityWidget()));
                 _weatherViewModel!.getWeather(_selectedCity);
               },
               icon: const Icon(Icons.search))
